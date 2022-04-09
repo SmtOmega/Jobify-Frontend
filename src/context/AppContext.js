@@ -73,8 +73,9 @@ const AppContext = React.createContext();
 const AppProvider = ({ children }) => {
   const [state, dispacth] = useReducer(reducer, initialState);
 
+  const publicUrl = process.env.REACT_APP_PUBLIC_URL
   const authFetch = axios.create({
-    baseURL: "/api/v1",
+    baseURL: `${publicUrl}/api/v1`,
     headers: {
       Authorization: `Bearer ${state.token}`,
     },
@@ -106,7 +107,7 @@ const AppProvider = ({ children }) => {
   const registerUser = async (currentUser) => {
     dispacth({ type: REGISTER_USER_BEGIN });
     try {
-      const response = await axios.post("/api/v1/auth/register", currentUser);
+      const response = await axios.post(`${publicUrl}/api/v1/auth/register`, currentUser);
       dispacth({ type: REGISTER_USER_SUCCESS, payload: response.data });
 
       addUserToLocalStorage(response.data);
@@ -122,7 +123,7 @@ const AppProvider = ({ children }) => {
   const loginUser = async (userData) => {
     dispacth({ type: LOGIN_USER_BEGIN });
     try {
-      const response = await axios.post("/api/v1/auth/login", userData);
+      const response = await axios.post(`${publicUrl}/api/v1/auth/login`, userData);
       dispacth({ type: LOGIN_USER_SUCCESS, payload: response.data });
       addUserToLocalStorage(response.data);
     } catch (error) {
