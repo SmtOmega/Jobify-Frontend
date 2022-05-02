@@ -61,11 +61,11 @@ const initialState = {
   page: 1,
   stats: {},
   monthlyApplications: [],
-  search: '',
-  searchStatus: 'all',
-  searchType: 'all',
-  sort: 'latest',
-  sortOptions: ['latest', 'oldest', 'a-z', 'z-a']
+  search: "",
+  searchStatus: "all",
+  searchType: "all",
+  sort: "latest",
+  sortOptions: ["latest", "oldest", "a-z", "z-a"],
 };
 
 const AppContext = React.createContext();
@@ -73,8 +73,8 @@ const AppContext = React.createContext();
 const AppProvider = ({ children }) => {
   const [state, dispacth] = useReducer(reducer, initialState);
 
-  const publicUrl = process.env.REACT_APP_PUBLIC_URL
-  console.log(publicUrl)
+  const publicUrl = process.env.REACT_APP_PUBLIC_URL;
+
   const authFetch = axios.create({
     baseURL: `${publicUrl}/api/v1`,
     headers: {
@@ -108,7 +108,10 @@ const AppProvider = ({ children }) => {
   const registerUser = async (currentUser) => {
     dispacth({ type: REGISTER_USER_BEGIN });
     try {
-      const response = await axios.post(`${publicUrl}/api/v1/auth/register`, currentUser);
+      const response = await axios.post(
+        `${publicUrl}/api/v1/auth/register`,
+        currentUser
+      );
       dispacth({ type: REGISTER_USER_SUCCESS, payload: response.data });
 
       addUserToLocalStorage(response.data);
@@ -124,7 +127,10 @@ const AppProvider = ({ children }) => {
   const loginUser = async (userData) => {
     dispacth({ type: LOGIN_USER_BEGIN });
     try {
-      const response = await axios.post(`${publicUrl}/api/v1/auth/login`, userData);
+      const response = await axios.post(
+        `${publicUrl}/api/v1/auth/login`,
+        userData
+      );
       dispacth({ type: LOGIN_USER_SUCCESS, payload: response.data });
       addUserToLocalStorage(response.data);
     } catch (error) {
@@ -203,20 +209,20 @@ const AppProvider = ({ children }) => {
   };
 
   const getJobs = async () => {
-    const {sort, search, searchType, searchStatus, page } = state
+    const { sort, search, searchType, searchStatus, page } = state;
     dispacth({ type: GET_JOBS_BEGIN });
     let url = `/jobs?page=${page}&status=${searchStatus}&sort=${sort}&jobType=${searchType}`;
 
-    if(search){
-      url = url + `&search=${search}`
+    if (search) {
+      url = url + `&search=${search}`;
     }
     try {
       const response = await authFetch(url);
       dispacth({ type: GET_JOBS_SUCCESS, payload: response.data });
     } catch (error) {
-      logoutUser()
+      logoutUser();
     }
-    
+
     clearAlert();
   };
 
@@ -273,18 +279,17 @@ const AppProvider = ({ children }) => {
         },
       });
     } catch (error) {
-      logoutUser()
+      logoutUser();
     }
     clearAlert();
   };
 
-
   const clearFilters = () => {
-    dispacth({type: CLEAR_FILTERS})
-  }
+    dispacth({ type: CLEAR_FILTERS });
+  };
   const changePage = (page) => {
-    dispacth({type: CHANGE_PAGE, payload: {page}})
-  }
+    dispacth({ type: CHANGE_PAGE, payload: { page } });
+  };
   return (
     <AppContext.Provider
       value={{
@@ -303,8 +308,8 @@ const AppProvider = ({ children }) => {
         deleteJob,
         editJob,
         showStats,
-        clearFilters, 
-        changePage
+        clearFilters,
+        changePage,
       }}
     >
       {children}
